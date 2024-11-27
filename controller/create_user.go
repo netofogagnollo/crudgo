@@ -1,22 +1,19 @@
 package controller
 
 import (
-	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/netofogagnollo/crudgo/configuration/logger"
 	"github.com/netofogagnollo/crudgo/configuration/validation"
 	"github.com/netofogagnollo/crudgo/controller/model/request"
 	"github.com/netofogagnollo/crudgo/model"
-	"github.com/netofogagnollo/crudgo/model/service"
+	"github.com/netofogagnollo/crudgo/view"
+	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-var (
-	UserDomainInterface model.UserDomainInterface
-)
-
-func CreateUser(c *gin.Context) {
+func (uc *userControllerInterface) CreateUser(c *gin.Context) {
 	logger.Info("Init CreateUser controller",
 		zapcore.Field{
 			Key:    "joruney",
@@ -38,25 +35,23 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	domain := model.NewUserDomain(userRequest.Email, userRequest.Password, userRequest.Name, userRequest.Age)
-	service := service.NewUserDomainInterface()
-	if err := service.CreateUser(domain); err != nil {
+	domain := model.NewUserDomain(
+		userRequest.Email,
+		userRequest.Password,
+		userRequest.Name,
+		userRequest.Age,
+	)
+
+	if err := uc.service.CreateUser(domain); err != nil {
 		c.JSON(err.Code, err)
 		return
 	}
 
 	logger.Info("User CreateUser successfully",
-		zapcore.Field{
-			Key:    "joruney",
-			String: "createUser",
-		},
-	)
-	fmt.Println(userRequest)
-	// response := response.UserResponse{
-	// 	ID:    "test",
-	// 	Email: userRequest.Email,
-	// 	Name:  userRequest.Name,
-	// 	Age:   userRequest.Age,
-	// }
-	// c.JSON(http.statusOK, response)
+		zap.String("joruney", "createUser"))
+
+	c.JSON(http.StatusOK, view.ConvertDomainToResponse(
+		domain,
+	))
+
 }
