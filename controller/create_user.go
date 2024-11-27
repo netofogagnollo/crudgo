@@ -8,6 +8,7 @@ import (
 	"github.com/netofogagnollo/crudgo/configuration/validation"
 	"github.com/netofogagnollo/crudgo/controller/model/request"
 	"github.com/netofogagnollo/crudgo/model"
+	"github.com/netofogagnollo/crudgo/model/service"
 	"go.uber.org/zap/zapcore"
 )
 
@@ -38,7 +39,8 @@ func CreateUser(c *gin.Context) {
 	}
 
 	domain := model.NewUserDomain(userRequest.Email, userRequest.Password, userRequest.Name, userRequest.Age)
-	if err := domain.CreateUser(); err != nil {
+	service := service.NewUserDomainInterface()
+	if err := service.CreateUser(domain); err != nil {
 		c.JSON(err.Code, err)
 		return
 	}
