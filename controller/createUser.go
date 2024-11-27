@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/netofogagnollo/crud-go/crud-go/src/configuration/validation"
-	"github.com/netofogagnollo/crud-go/crud-go/src/controller/model/request"
+	"github.com/netofogagnollo/crudgo/configuration/validation"
+	"github.com/netofogagnollo/crudgo/controller/model/request"
 )
 
 func CreateUser(c *gin.Context) {
